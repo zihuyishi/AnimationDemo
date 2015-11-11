@@ -8,13 +8,16 @@
 
 import UIKit
 
-class SYSpringViewController: UIViewController {
+class SYSpringViewController: SYBasicViewController {
 
-    @IBOutlet weak var imageView: UIImageView!
+    var imageView: UIImageView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        imageView = UIImageView(frame: CGRectMake(50, 150, 50, 50));
+        imageView!.backgroundColor = UIColor.yellowColor()
+        self.view.addSubview(imageView!);
+        self.view.backgroundColor = UIColor.whiteColor()
         // Do any additional setup after loading the view.
     }
 
@@ -23,6 +26,9 @@ class SYSpringViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    override func infomation() -> String {
+        return "Spring"
+    }
 
     /*
     // MARK: - Navigation
@@ -44,7 +50,7 @@ class SYSpringViewController: UIViewController {
                 initialSpringVelocity: 3,
                 options: UIViewAnimationOptions.CurveEaseOut,
                 animations: { () -> Void in
-                    self.imageView.center = location;
+                    self.imageView!.center = location;
                 },
                 completion: { (Bool) -> Void in
                     

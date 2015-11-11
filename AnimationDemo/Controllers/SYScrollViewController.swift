@@ -10,7 +10,7 @@ import UIKit
 
 let PageCount: Int32 = 10
 
-class SYScrollViewController: UIViewController {
+class SYScrollViewController: SYBasicViewController {
     
     var scrollView: UIScrollView?
 
@@ -18,12 +18,14 @@ class SYScrollViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        self.view.backgroundColor = UIColor.whiteColor()
         let scrollViewWidth = CGFloat(PageCount) * self.view.bounds.size.width
+        let topBarHeight = self.navigationController!.navigationBar.bounds.size.height
         scrollView = UIScrollView.init(frame: self.view.bounds)
-        scrollView?.contentSize = CGSizeMake(scrollViewWidth, self.view.bounds.size.height)
+        scrollView?.contentSize = CGSizeMake(scrollViewWidth, self.view.bounds.size.height - topBarHeight)
         scrollView?.delegate = self
         self.view.addSubview(scrollView!);
-        for i in 0...PageCount {
+        for i in 0...PageCount-1 {
             scrollView?.addSubview(pageView(i))
         }
     }
@@ -33,7 +35,9 @@ class SYScrollViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
+    override func infomation() -> String {
+        return "ScrollView"
+    }
     /*
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
