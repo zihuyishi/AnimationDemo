@@ -41,6 +41,25 @@ class SYWaterDropView : UIView {
         self.setNeedsDisplay()
     }
     
+    func addWaterDrop(path: UIBezierPath, inRect rect: CGRect) {
+        let width = rect.size.width
+        let height = rect.size.height
+        let radius = width / 2.0
+        let centerX = ceil(rect.origin.x + width / 2)
+        let centerY = ceil(height - radius + rect.origin.y)
+        let leftX = ceil(width / 2 - radius + rect.origin.x)
+        let rightX = ceil(width / 2 + radius + rect.origin.x)
+        path.moveToPoint(CGPointMake(centerX, rect.origin.y))
+        path.addLineToPoint(CGPointMake(leftX, centerY))
+        path.moveToPoint(CGPointMake(centerX, rect.origin.y))
+        path.addLineToPoint(CGPointMake(rightX, centerY))
+
+        path.addArcWithCenter(CGPointMake(centerX, centerY),
+            radius: radius,
+            startAngle: 0,
+            endAngle: CGFloat(M_PI),
+            clockwise: true);
+    }
 
     override func drawRect(rect: CGRect) {
         if let layer = self.layer.presentationLayer() {
@@ -49,41 +68,16 @@ class SYWaterDropView : UIView {
             progress = progress > 1 ? 1 : progress
             let path = UIBezierPath()
             UIColor.colorFromHex(0x66ccff, alpha: 0.8).setFill()
-            if (progress < 0.15) {
-                let radius = self.bounds.height / 4.0
-                let center = CGPointMake(self.bounds.width / 2.0, radius)
-                
-                path.addArcWithCenter(center, radius: radius, startAngle: 0, endAngle: CGFloat(M_PI * 2.0), clockwise: true)
-            }
-            else if (progress < 0.45) {
-                let radius = self.bounds.height / 4.0
-                let radius1 = radius * 0.35
-                let radius2 = radius * 0.65
-                let center1 = CGPointMake(self.bounds.width / 2.0, radius * 0.25)
-                let center2 = CGPointMake(self.bounds.width / 2.0, self.bounds.height / 2)
-                
-                path.addArcWithCenter(center1, radius: radius1, startAngle: 0, endAngle: CGFloat(M_PI * 2.0), clockwise: true)
-                path.moveToPoint(CGPointMake(center2.x, center2.y-radius2))
-                path.addArcWithCenter(center2, radius: radius2, startAngle: 0, endAngle: CGFloat(M_PI * 2.0), clockwise: true)
-            }
-            else {
-                let radius = self.bounds.height / 4.0
-                let radius1 = radius * 0.25
-                let radius2 = radius * 0.25
-                let radius3 = radius - radius1 - radius2
-                let centerX = self.bounds.width / 2.0
-                let center1 = CGPointMake(centerX, radius1)
-                let center2 = CGPointMake(centerX, radius + radius2)
-                let center3 = CGPointMake(centerX, radius * 2.0 + radius3)
-                
-                path.addArcWithCenter(center1, radius: radius1, startAngle: 0, endAngle: CGFloat(M_PI * 2.0), clockwise: true)
-                path.moveToPoint(CGPointMake(center2.x, center2.y-radius2))
-                path.addArcWithCenter(center2, radius: radius2, startAngle: 0, endAngle: CGFloat(M_PI * 2.0), clockwise: true)
-                path.moveToPoint(CGPointMake(center3.x, center3.y-radius3))
-                path.addArcWithCenter(center3, radius: radius3, startAngle: 0, endAngle: CGFloat(M_PI * 2.0), clockwise: true)
-            }
+            
+            let height = self.bounds.height / 2 * (1 + progress)
+            let width = self.bounds.width / 2 * (1 - progress * 0.8)
+            let center = CGPointMake(self.bounds.width / 2, self.bounds.height / 2)
+            let dropRect = CGRectMake(ceil(center.x - width / 2), ceil(center.y - height / 2), ceil(width), ceil(height))
+            self.addWaterDrop(path, inRect: dropRect)
+
             path.closePath()
             path.fill()
+//            path.stroke()
         }
     }
 }
